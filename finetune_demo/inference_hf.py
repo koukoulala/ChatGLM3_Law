@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-torch.backends.cudnn.enable =True
-torch.backends.cudnn.benchmark = True
 
 from pathlib import Path
 from typing import Annotated, Union
