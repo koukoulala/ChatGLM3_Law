@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-torch.backends.cudnn.enable =True
-torch.backends.cudnn.benchmark = True
 
 from pathlib import Path
 from typing import Annotated, Union
@@ -30,12 +28,12 @@ def load_model_and_tokenizer(model_dir: Union[str, Path]) -> tuple[ModelType, To
     model_dir = _resolve_path(model_dir)
     if (model_dir / 'adapter_config.json').exists():
         model = AutoPeftModelForCausalLM.from_pretrained(
-            model_dir, trust_remote_code=True, device_map='cpu'
+            model_dir, trust_remote_code=True, device_map='auto'
         )
         tokenizer_dir = model.peft_config['default'].base_model_name_or_path
     else:
         model = AutoModelForCausalLM.from_pretrained(
-            model_dir, trust_remote_code=True, device_map='cpu'
+            model_dir, trust_remote_code=True, device_map='auto'
         )
         tokenizer_dir = model_dir
     tokenizer = AutoTokenizer.from_pretrained(
@@ -47,12 +45,14 @@ def load_model_and_tokenizer(model_dir: Union[str, Path]) -> tuple[ModelType, To
 @app.command()
 def main(
         model_dir: Annotated[str, typer.Argument(help='')],
-        prompt: Annotated[str, typer.Option(help='')],
+        out_dir: Annotated[str, typer.Option(help='')],
 ):
     model, tokenizer = load_model_and_tokenizer(model_dir)
-    response, _ = model.chat(tokenizer, prompt)
-    print(response)
 
+    # 把加载原模型和lora模型后做合并，并保存
+    merged_model = model.merge_and_unload()
+    merged_model.save_pretrained(out_dir, safe_serialization=True)
+    tokenizer.save_pretrained(out_dir)
 
 if __name__ == '__main__':
     app()
