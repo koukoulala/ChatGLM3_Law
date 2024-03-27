@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
-import torch
 torch.backends.cudnn.enable =True
 torch.backends.cudnn.benchmark = True
-'''
+
 from pathlib import Path
 from typing import Annotated, Union
 
@@ -32,12 +30,12 @@ def load_model_and_tokenizer(model_dir: Union[str, Path]) -> tuple[ModelType, To
     model_dir = _resolve_path(model_dir)
     if (model_dir / 'adapter_config.json').exists():
         model = AutoPeftModelForCausalLM.from_pretrained(
-            model_dir, trust_remote_code=True, device_map='cpu'
+            model_dir, trust_remote_code=True, device_map='auto'
         )
         tokenizer_dir = model.peft_config['default'].base_model_name_or_path
     else:
         model = AutoModelForCausalLM.from_pretrained(
-            model_dir, trust_remote_code=True, device_map='cpu'
+            model_dir, trust_remote_code=True, device_map='auto'
         )
         tokenizer_dir = model_dir
     tokenizer = AutoTokenizer.from_pretrained(
