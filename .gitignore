@@ -2,7 +2,6 @@ __pycache__
 ckpts/
 data/
 output/
-logs/
 
 # finetune_demo: generated & downloaded files
 finetune_demo/output

@@ -48,6 +48,7 @@ def main(
         prompt: Annotated[str, typer.Option(help='')],
 ):
     model, tokenizer = load_model_and_tokenizer(model_dir)
+    print("loaded model from: ", model_dir)
     response, _ = model.chat(tokenizer, prompt)
     print(response)
 
