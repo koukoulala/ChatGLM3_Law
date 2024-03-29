@@ -7,10 +7,10 @@ max_input_length: 500
 max_output_length: 500
 training_args:
   # see `transformers.Seq2SeqTrainingArguments`
-  output_dir: ./output
-  max_steps: 3000
+  output_dir: ./output_law
+  max_steps: 10000
   # settings for data loading
-  per_device_train_batch_size: 1
+  per_device_train_batch_size: 2
   dataloader_num_workers: 16
   remove_unused_columns: false
   # settings for saving checkpoints
